@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Year of Weeks</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --black: #000;
+        --faded-black: #333;
+        --white: #fff;
+        --pink: #ff206e;
+        --turquoise: #41ead4;
+        --yellow: #fbff12;
+        --orange: #ff7f11;
+        --lime: #baff00;
+        --cyan: #00fff7;
+        --purple: #a259ff;
+        --red: #ff1744;
+        --blue: #2979ff;
+        --green: #00e676;
+        --magenta: #ff2eec;
+        --gold: #ffd600;
+        --teal: #1de9b6;
+
+        --white-90: rgba(255, 255, 255, 0.9);
+
+        --black-85: rgba(0, 0, 0, 0.85);
+        --faded-black-85: rgba(51, 51, 51, 0.85);
+        --white-85: rgba(255, 255, 255, 0.85);
+        --pink-85: rgba(255, 32, 110, 0.85);
+        --turquoise-85: rgba(65, 234, 212, 0.85);
+        --yellow-85: rgba(251, 255, 18, 0.85);
+        --orange-85: rgba(255, 127, 17, 0.85);
+        --lime-85: rgba(186, 255, 0, 0.85);
+        --cyan-85: rgba(0, 255, 247, 0.85);
+        --purple-85: rgba(162, 89, 255, 0.85);
+        --red-85: rgba(255, 23, 68, 0.85);
+        --blue-85: rgba(41, 121, 255, 0.85);
+        --green-85: rgba(0, 230, 118, 0.85);
+        --magenta-85: rgba(255, 46, 236, 0.85);
+        --gold-85: rgba(255, 214, 0, 0.85);
+        --teal-85: rgba(29, 233, 182, 0.85);
+      }
+
+      ::selection {
+        color: var(--cyan);
+        background-color: var(--orange);
+      }
+
+      body {
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+          monospace;
+        font-size: 20px;
+      }
+
+      .Calendar {
+        width: 100%;
+        min-width: 1800px;
+      }
+
+      .Calendar__Header {
+        display: grid;
+        grid-template-columns: 80px repeat(7, minmax(0, 1fr));
+        position: sticky;
+        width: 100%;
+        top: 0;
+        z-index: 9;
+      }
+
+      .Calendar__HeaderItem {
+        flex: 1;
+        font-weight: bold;
+        background: var(--black);
+        color: var(--white);
+        border: 1px solid var(--white);
+        border-right: 0;
+        padding: 5px;
+      }
+
+      .Week {
+        position: relative;
+      }
+
+      .Week__Meta {
+        /* position: absolute; */
+        /* top: 0; */
+        /* left: 0; */
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+        z-index: 2;
+        font-size: 60px;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.5);
+        pointer-events: none;
+        text-transform: uppercase;
+      }
+
+      .Week__Days {
+        display: grid;
+        grid-template-columns: 80px repeat(7, minmax(0, 1fr));
+      }
+
+      .Week__Day {
+        text-transform: uppercase;
+        border: 1px solid var(--black);
+        border-bottom: 0 none;
+        aspect-ratio: 1 / 1;
+        background-color: var(--faded-black);
+        color: var(--white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        padding: 10px;
+      }
+
+      .Week__Day:not(:last-child) {
+        border-right: 0 none;
+      }
+
+      .Week__Day:hover {
+        /* border-color: var(--white); */
+      }
+
+      .Week__Day.--disable {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .Week__Day.--jan {
+        background-color: var(--faded-black);
+        color: var(--white);
+      }
+
+      .Week__Day.--feb {
+        background-color: var(--purple);
+        color: var(--white);
+      }
+
+      .Week__Day.--mar {
+        background-color: var(--blue);
+        color: var(--white);
+      }
+
+      .Week__Day:not(.--theme):hover .Week__DayNum {
+        background-color: var(--white);
+        color: var(--black);
+      }
+
+      .Week__Day.--theme {
+        background: var(--white);
+        color: var(--black);
+        border-right: 1px solid var(--black);
+        writing-mode: sideways-lr;
+        aspect-ratio: unset;
+        position: initial;
+      }
+
+      .Week__ThemeMeta {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: calc(100% - 80px);
+        height: 100%;
+        padding: 10px;
+        background: var(--white-90);
+        z-index: 3;
+        writing-mode: initial;
+        display: none;
+      }
+
+      .Week__Day.--theme:hover {
+        background: black;
+        color: white;
+      }
+      .Week__Day.--theme:hover + .Week__ThemeMeta {
+        display: block;
+        color: black;
+      }
+
+      .Week__DayDesc {
+        position: absolute;
+        line-height: 1.5;
+        top: 0px;
+        right: 0px;
+        z-index: 3;
+        width: calc(100% - 80px);
+        height: calc(100% - 0px);
+        background: var(--teal-85);
+        color: var(--white);
+        padding: 10px;
+        opacity: 0;
+        pointer-events: none;
+        font-weight: normal;
+
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        text-shadow:
+          1px 1px 0px var(--teal),
+          -1px -1px 0px var(--teal),
+          -1px 1px 0px var(--teal),
+          1px -1px 0px var(--teal);
+      }
+
+      .Week__DayDesc.--show {
+        opacity: 1;
+      }
+
+      .Week__DayNum {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 35px;
+        height: 35px;
+        padding: 5px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-start;
+        font-size: 12px;
+        font-weight: bold;
+        border-left: 1px solid var(--black);
+        border-bottom: 1px solid var(--black);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Jacob Is Doing The Year of Weeks</h1>
+
+      <p id="subtitle">Every year is made of weeks. Every week has a theme.</p>
+      <p id="subtitle">Every week is Monday -> Sunday.</p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-label" id="progressLabel"></div>
+    </header>
+
+    <main class="Calendar" id="calendar">
+      <div class="Calendar__Header">
+        <div class="Calendar__HeaderItem"></div>
+        <div class="Calendar__HeaderItem">MON</div>
+        <div class="Calendar__HeaderItem">TUE</div>
+        <div class="Calendar__HeaderItem">WED</div>
+        <div class="Calendar__HeaderItem">THU</div>
+        <div class="Calendar__HeaderItem">FRI</div>
+        <div class="Calendar__HeaderItem">SAT</div>
+        <div class="Calendar__HeaderItem">SUN</div>
+      </div>
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">RIFFS</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              This week I learned or honed new guitar riffs every day. A simple
+              theme for a short week.
+            </div>
+            <div>Musical</div>
+            <div>Rating: 8/10</div>
+          </div>
+
+          <div class="Week__Day --disable">
+            <div class="Week__DayNum">29</div>
+          </div>
+          <div class="Week__Day --disable">
+            <div class="Week__DayNum">30</div>
+          </div>
+          <div class="Week__Day --disable">
+            <div class="Week__DayNum">31</div>
+          </div>
+          <div class="Week__Day --jan" data-desc="01-01">
+            <div class="Week__DayNum">01</div>
+            THE DECIEVED
+          </div>
+          <div class="Week__Day --jan" data-desc="01-02">
+            <div class="Week__DayNum">02</div>
+            JESSICA
+          </div>
+          <div class="Week__Day --jan" data-desc="01-03">
+            <div class="Week__DayNum">03</div>
+            Slaughter of the Soul
+          </div>
+          <div class="Week__Day --jan" data-desc="01-04">
+            <div class="Week__DayNum">04</div>
+            Motherhood of God
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-01">
+            Trivuim - The Decieved (full song, this one was a refresher for me
+            but I played it alot, its a ton of fun)
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-02">
+            Allman Brothers - Jessica (the main guitar part, very fun, this one
+            stuck with me the most)
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-03">
+            At The Gates - Slaughter of the Soul (intro riff, hard! I played it
+            transposed up to D standard, the original song is in C standard)
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-04">
+            Tribulation - Motherhood of God (clean/intro part, not too hard but
+            a good multistring picking exercise)
+          </div>
+        </div>
+      </div>
+
+      <!-- week 2: MOVIE THEATERS -->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">MOVIE THEATERS</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              This week I saw more movies in theaters than usual, in different
+              theaters than usual. Three, specificaly
+            </div>
+            <div>Consumptive/Media</div>
+            <div>Rating 7/10</div>
+          </div>
+
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">05</div>
+          </div>
+          <div class="Week__Day --jan" data-desc="01-06">
+            <div class="Week__DayNum">06</div>
+            AVATAR 3 @ Williamburg Cinemas
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">07</div>
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">08</div>
+          </div>
+          <div class="Week__Day --jan" data-desc="01-09">
+            <div class="Week__DayNum">09</div>
+            NO OTHER CHOICE @ Angelica Film Center
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">10</div>
+          </div>
+          <div class="Week__Day --jan" data-desc="01-11">
+            <div class="Week__DayNum">11</div>
+            CRONOS @ Low Cinema
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-06">
+            Avatar 3 at Willaimsburg cinema, a normal theater for a normal
+            movie. 2/3 really great, 1/3 retread of The Way of Water. The
+            popcorn was decent, the theater was comfortable.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-09">
+            No Other Choice at Angelica Film Center. Park Chan-Wook delivers a
+            movie about a guy who loses his job and handles it really poorly. A
+            gorgeous film about how capitalism alienates us from our fellow man
+            and makes monsters of us all. The line for concessions was a mile
+            long so and the theater itself felt like being inside of a giant
+            shipping container. A bizarre spatial experience for an
+            uncomfortable film.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-11">
+            Cronos, Guierllmo Deltoro's first feature. I saw this at Low Cinema.
+            A tiny 42 seat, 1 screen theater in Ridgewood run by John Wilson.
+            The popcorn was $5 and too salty, the house was packed. Best movie
+            experience of the week.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 3: NEW FRUITS -->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">NEW FRUITS</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              This week I ate a new (to me) fruit every day. I described and
+              rated each fruit on it's flavor, aroma, mouthfeel, visual appeal,
+              and ease of use.
+            </div>
+            <div>Consumptive/Food</div>
+            <div>Rating 7/10</div>
+          </div>
+
+          <div class="Week__Day --jan" data-desc="01-12">
+            <div class="Week__DayNum">12</div>
+            DRAGONFRUIT
+          </div>
+          <div class="Week__Day --jan" data-desc="01-13">
+            <div class="Week__DayNum">13</div>
+            LYCHEE
+          </div>
+          <div class="Week__Day --jan" data-desc="01-14">
+            <div class="Week__DayNum">14</div>
+            PEPINO MELON
+          </div>
+          <div class="Week__Day --jan" data-desc="01-15">
+            <div class="Week__DayNum">15</div>
+            STARFRUIT
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">16</div>
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">17</div>
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">18</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-12">
+            DRAGON FRUIT - Wild on the outside, mild on the inside
+            <br />
+            FLAVOR: 4/5, mild, like a kiwi but less tart. It is basically the
+            perfect level of sweet.
+            <br />AROMA: 3/5, minimal <br />MOUTHFEEL: 5/5 delightful. Soft but
+            not mushy and full of tiny seeds that provided a burst of crunch in
+            every bite. <br />
+            VISUAL APPEAL: 5/5 The striking red color and nearly scaly outer
+            appearance does not at all hint at the stark black and white inside.
+            <br />
+            EASE OF USE: 3/5. You need a knife to get into this one but the soft
+            pliant skin comes right off the fruit. Not much work at all. <br />
+            OVERALL: 4/5 I'm absolutely charmed by this fruit
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-13">
+            LYCHEE - Subdued but distinct<br />
+
+            FLAVOR: 3/5, Moderatly sweet and somewhat floral, every so slightly
+            tart<br />
+            AROMA: 3/5, a very mild floral/tropical aroma<br />
+            MOUTHFEEL: 3/5 the smooth flesh was surprising, it reminded me of
+            the smooth muscle of octopus<br />
+            VISUAL APPEAL: 4/5 Lychee is a charming and vivid fruit, and the
+            contrast between the outside and inside is exciting<br />
+            EASE OF USE: 2/5, you really need a knife to start peeling a lychee.
+            It's incredibly juicy and the necessity of avoiding the large seed
+            means you're going to get that juice on you. Sort of messy.<br />
+            OVERALL: 3/5 I liked this one, and I'd get it again. I think the
+            lychee I bought were slightly overripe, I know to look for greener
+            ones next time.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-14">
+            PEPINO MELON - a cucumber by another name<br />
+
+            FLAVOR: 2/5, It tastes almost exactly like a cucumber<br />
+            AROMA: 2/5, vegetal and mild, again, like a cucumber<br />
+            MOUTHFEEL: 2.5/5 crunchy and juicy, not bad<br />
+            VISUAL APPEAL: 2/5 Pepino melon looks a bit like a oblong
+            baseball.<br />
+            EASE OF USE: 5/5, You can eat these things like an apple if you
+            like, it doesn't get any easier than that.<br />
+            OVERALL: 2/5 Pepino melon was a dissapointment, even making the
+            remainder of it into a smoothie didnt salvage the experience. I can
+            imagine it being a good constituent ingredient in a salad, but
+            Pepino Melon is not ready for the spotlight.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-15">
+            Star Fruit - secretly a pear<br />
+
+            FLAVOR: 2.5/5, Sweet, tart. I think mine was underripe.<br />
+            AROMA: 3/5, reminiscent of apples and pears<br />
+            MOUTHFEEL: 3/5, moist and crisp. The seeds were a bit more prominent
+            than I'd prefer.<br />
+            VISUAL APPEAL: 4/5 this is where the star fruit really shines. When
+            cut in cross section it's hard to imagine a more appealing snack.<br />
+            EASE OF USE: 5/5, just slice and eat, skin and all. It's just as
+            easy to eat as an apple.<br />
+            OVERALL: 3/5, I found the starfruit pleasant, familiar, and
+            unremarkable. I'd try it again, I fear I haven't given it a fair
+            shake.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 4: My grandma's death -->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">Grandma's Death</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              My Grandma died on January 15 2026. She was 96. This week was
+              about her funeral.
+            </div>
+            <div>Experiential/Death</div>
+            <div>Rating ?/10</div>
+          </div>
+
+          <div class="Week__Day --jan" data-desc="01-19">
+            <div class="Week__DayNum">19</div>
+            North Carolina
+          </div>
+          <div class="Week__Day --jan" data-desc="01-20">
+            <div class="Week__DayNum">20</div>
+            Planning
+          </div>
+          <div class="Week__Day --jan" data-desc="01-21">
+            <div class="Week__DayNum">21</div>
+            Cooking
+          </div>
+          <div class="Week__Day --jan" data-desc="01-22">
+            <div class="Week__DayNum">22</div>
+            Alone In Her House
+          </div>
+          <div class="Week__Day --jan" data-desc="01-23">
+            <div class="Week__DayNum">23</div>
+            The Funeral
+          </div>
+          <div class="Week__Day --jan" data-desc="01-24">
+            <div class="Week__DayNum">24</div>
+            Going Home
+          </div>
+          <div class="Week__Day --jan">
+            <div class="Week__DayNum">25</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-19">
+            I went through a lot of old pictures to find good ones of Grandma
+            for the funeral. I found a lot of old pictures of myself as well,
+            full of things I don't have anymore. Full of my family younger and
+            healthier and happier. I'm trying to be helpful and loving and
+            patient with my parents. I don't know what else to do.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-21">
+            The planning is done. The funeral is Friday. Me and Matt cooked
+            dinner. Multiple friends have checked in with me. It's nice to feel
+            cared about.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-22">
+            I sat in her house on today, by myself, and ate ice cream out of her
+            freezer. I looked at her pictures. I flipped through a book a word
+            search puzzles she never finished. It was surreal and awful. The
+            temperature inside was 50 degrees. I grew up in that house. She
+            picked me up from elementary school, she cared for me, she fed me,
+            played with me. She helped raise me. Her house was the locus of our
+            extended family life. Now it's empty. It's still decorated for
+            thanksgiving. That's the last time she lived there.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="01-23">
+            The day of Grandma's funeral was mercifully warm and sunny in an
+            otherwise frigid week. The service visitation was more crowded than
+            I expexcted. I cried about as much as I expected.
+
+            <br />On the drive back from the burial I asked my parents if it
+            felt weird to be "the grandparents" of the family. The said yes. I
+            added that it feels weird to be an uncle. After a pause my mom said
+            it felt weirder to be an orphan. I think she'd be thinking about
+            that for a while.<br />
+
+            I loved my grandma very much. I still do.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-24">
+            The week was hard. I feel like I did nothing but chores and errands
+            and housework. Planning a funeral is a lot of work. My dad was
+            released from the hospital just 2 days before grandma died. He could
+            barely walk, his muscles had atrophied so badly during his 6 week
+            stay. It's especially taxing on my mom, who spent the last months
+            caring for both dad and grandma. I did my best to help her and
+            reassure her. To take as much work off of her as I could. To let her
+            know shes been a good daughter and a good mother. I felt equally
+            guilty and relieved to return home to brooklyn at the end of the
+            week.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 5: reading essays -->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">READING ESSAYS</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              This week I read essays, something I almost never do. I'm entirely
+              unfamiliar with the form so I've tried to take what seemed like a
+              broad swath from the genre, though I admit I have a bias for
+              recent works.
+              <br />
+              This theme was miserable, I don't think I truly enjoyed any of the
+              selections. I need a better curator.
+            </div>
+            <div>Consumptive/Media</div>
+            <div>Rating 2/10</div>
+          </div>
+
+          <div class="Week__Day --jan" data-desc="01-26">
+            <div class="Week__DayNum">26</div>
+            Some Thoughts on the Common Toad, 1946, George Orwell
+          </div>
+          <div class="Week__Day --jan" data-desc="01-27">
+            <div class="Week__DayNum">27</div>
+            What Is A Man, 1906, Mark Twain
+          </div>
+          <div class="Week__Day --jan" data-desc="01-28">
+            <div class="Week__DayNum">28</div>
+            Notes of a Native Son, 1955, James Baldwin
+          </div>
+          <div class="Week__Day --jan" data-desc="01-29">
+            <div class="Week__DayNum">29</div>
+            Notes on Camp, 1946, Susan Sontag
+          </div>
+          <div class="Week__Day --jan" data-desc="01-30">
+            <div class="Week__DayNum">30</div>
+          </div>
+          <div class="Week__Day --jan" data-desc="01-31">
+            <div class="Week__DayNum">31</div>
+          </div>
+          <div class="Week__Day --feb" data-desc="02-01">
+            <div class="Week__DayNum">1</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-26">
+            Some Thoughts on the Common Toad, 1946, George Orwell<br />Orwell's
+            a naturalist, or at least a great admirer of nature, and he wants to
+            be sure you know it. I presume this essay is written in reaction to
+            a specific person or persons, but that's how so many great Posts
+            start.<br />
+
+            It reminded me of spring last year, watching a tiny bright green
+            inchworm crawl it's way through the mulch and dirt in Maria
+            Hernandez Park. It was so richly colorful and so new, and working so
+            hard at whatever inchworms work at. I probaly watched it for 10
+            minutes. Orwell's right, they can't take that from you.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-27">
+            What Is A Man, 1906, Mark Twain
+            <br />
+            Twain makes the case for determinism and aginst free will via a
+            Platonic Dialog. Long-winded, repetitive, and without any of Twain's
+            trademark wit. This was a real slog.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-28">
+            Notes of a Native Son, 1955, James Baldwin
+            <br />
+            At this point I'm convinced I've done a poor job selecting essays. I
+            should have picked essays more in line with my personal tastes and
+            expertise, and education. I know Baldwin is an arresting speaker.
+            I've listened to him. But I fell asleep reading this.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="01-29">
+            Notes on Camp, 1946, Susan Sontag
+            <br />
+            IDK what I was thinking, I'm totally out of my depth here. I got
+            nothing out of this. I view that as a personal failure, not a
+            deficiency of the essay, but it did not make for a good reading
+            experience.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 6: >> -->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">ORIGAMI</div>
+          <div class="Week__ThemeMeta">
+            <div>This week I did a bit of beginner origami</div>
+            <div>Artistic</div>
+            <div>Rating 5/10</div>
+          </div>
+
+          <div class="Week__Day --feb" data-desc="02-02">
+            <div class="Week__DayNum">2</div>
+          </div>
+          <div class="Week__Day --feb" data-desc="02-03">
+            <div class="Week__DayNum">3</div>
+            crane
+          </div>
+          <div class="Week__Day --feb" data-desc="02-04">
+            <div class="Week__DayNum">4</div>
+            parakeet
+          </div>
+          <div class="Week__Day --feb" data-desc="02-05">
+            <div class="Week__DayNum">5</div>
+            lotus blossom
+          </div>
+          <div class="Week__Day --feb" data-desc="02-06">
+            <div class="Week__DayNum">6</div>
+            swan
+          </div>
+          <div class="Week__Day --feb" data-desc="02-07">
+            <div class="Week__DayNum">7</div>
+            swan
+          </div>
+          <div class="Week__Day --feb">
+            <div class="Week__DayNum">8</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-03">
+            first fold: crane<br />
+            This was simple enough, and even my poor choice of paper (salmon
+            pink construction paper, cut into a near-square with kitchen
+            scissors) didn't hold me back. Not challenging at all, but
+            delightful.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-04">
+            second fold: bird (parakeet)?<br />
+            I got proper paper for this. This was even simpler than the crane,
+            but my finished product is sloppier. I like it, it reminds me of my
+            grandma's budgies.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-05">
+            third fold: lotus flower.
+            <br />
+            I like this, but I did it upside down so the colored side of my
+            paper is mostly hidden. My petals are too large as well. I think
+            I'll try this one a few more times, its quite simple but really
+            pleasant. I'm really starting to get the importance of perfectly
+            exact folds, even small misalignments get amplified quickly!
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-06">
+            fourth fold: swan<br />
+            Very easy, probably my best fold. I'm getting better at long thing
+            points, though it's head is still a bit of a mess. I'm quite happy
+            with how this turned out
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-07">
+            fifth fold: swan<br />
+            did another one, its cute
+          </div>
+        </div>
+      </div>
+
+      <!-- week 7: audiobook-->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">AUDIOBOOK</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              I've tried to "get into" audiobooks a few times before but always
+              struggled to focus, letting the drone of the story fade into the
+              background while my thoughts roam elsewhere. But I like the *idea*
+              of them, so this week I'm giving them another shot with.
+            </div>
+            <div>Consumptive/Literary</div>
+            <div>Rating 6/10</div>
+          </div>
+
+          <div class="Week__Day --feb" data-desc="02-09">
+            <div class="Week__DayNum">9</div>
+            Bullshit Jobs by David Graeber
+          </div>
+          <div class="Week__Day --feb" data-desc="02-10">
+            <div class="Week__DayNum">10</div>
+          </div>
+          <div class="Week__Day --feb" data-desc="02-11">
+            <div class="Week__DayNum">11</div>
+            Chapter 1-2
+          </div>
+          <div class="Week__Day --feb" data-desc="02-12">
+            <div class="Week__DayNum">12</div>
+          </div>
+          <div class="Week__Day --feb" data-desc="02-13">
+            <div class="Week__DayNum">13</div>
+            Chapter 3-4
+          </div>
+          <div class="Week__Day --feb" data-desc="02-14">
+            <div class="Week__DayNum">14</div>
+            Chapters 5-7
+          </div>
+          <div class="Week__Day --feb" data-desc="02-15">
+            <div class="Week__DayNum">15</div>
+            Final thoughts
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-09">
+            Bullshit Jobs by David Graeber - I enjoyed reading Graeber's "Debt,"
+            it seemed like time to give his most popular work a listen.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-11">
+            Sunday/Monday: I did struggle to focus a bit, but the material is
+            engaging enough that I can usually settle into it. Graeber is a
+            witty, if slightly dry, writer. I like that about him. The first 2
+            chapters are very funny but seem to deal almost entirely in
+            subjectivitives, which did make me bristle a bit. I've come to
+            expect a more scientific analysis, and Graeber's squishiness reminds
+            me of pseudo-science charlatans and politicians, at least a little.
+            That said, I do *agree* with his admittedly subjective claims, and I
+            suspect the later chapters will get more dull and full of numbers.
+            His breakdown of "bullshit jobs" into 5 classes is funny, you could
+            run the worst TTRPG of all time with them.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-13">
+            I'm up to chapter 4 now, and Graeber has spent a lot of time talking
+            about how the current system of wage labor is both a historical
+            abberation (no one was keeping track of every hour of every worker's
+            day until ~1900), as well as how this state of affairs is
+            particularly demoralizing. He also spends a great deal of time
+            talking about how many jobs insist that worker spend hours doing
+            nothing at all but pretending they're busy. He uses the term
+            "spiritual violence." It's a good companion analysis to marxism I
+            think. I feel lucky to no longer be in such a job. My bosses don't
+            seem to care what hours I keep, as long as the work gets done.
+            Indeed, I left work at 4pm today to go to the gym, and listened to
+            this chapter while I did my dead lifts. I believe this made me a
+            better employee, not a worse one.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-14">
+            I finished the book, and thought I did struggle to maintain focus,
+            it was nice to fill my idle time with something more enriching than
+            news podcasts or youtube. Graeber finishes with a chapter on UBI.
+            Though he insists the book is meant to describe the problem of
+            "bullshit jobs" and not to perscribe a remedy, he can't help himself
+            from making the pitch.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-15">
+            Graeber's an interesting guy, his anarchist philosophy comes through
+            more loudly in this book than in "Debt." The book was less of a
+            study and more of a meditation. Graeber's arguments are largely
+            anecdotal, which is fine. He's not an economist or a chemist, he's
+            an anthropologist. That said, the fact that the book *is* largely a
+            work of philosophy stands at odds somewhat with the author's
+            insistence that he doesn't have the answer(s) to the problems he
+            observes. Maybe Graeber's anarchism prevents him from insisting on
+            particular solutions too loudly lest he be mistaken for a statist,
+            or worse, a corporatist.
+            <br />
+            I liked the book. I liked the audiobook format more than I have in
+            the past. I think I'll give it another try for nonfiction works in
+            the future.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 8: yoga-->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">YOGA</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              I've done a bit of yoga in the past but never made it a part of my
+              fitness routine. I feel like I want more flexibility and mobility
+              so I'm trying to incorporate yoga into my day, mostly short solo
+              sessions but at least one in person class at a local studio.
+            </div>
+            <div>Health/Fitness/Meditation</div>
+            <div>Rating 9/10</div>
+          </div>
+
+          <div class="Week__Day --feb" data-desc="02-16">
+            <div class="Week__DayNum">16</div>
+            Day 1 - Morning Mobility, Yoga With Adriene
+          </div>
+          <div class="Week__Day --feb" data-desc="02-17">
+            <div class="Week__DayNum">17</div>
+            Day 2 - Morning Mindfulness, Yoga With Adriene
+          </div>
+          <div class="Week__Day --feb" data-desc="02-18">
+            <div class="Week__DayNum">18</div>
+            Day 3 - Flow Yoga, Yoga with Adriene
+          </div>
+          <div class="Week__Day --feb" data-desc="02-19">
+            <div class="Week__DayNum">19</div>
+            Day 4 - Yoga with Adriene
+          </div>
+          <div class="Week__Day --feb" data-desc="02-20">
+            <div class="Week__DayNum">20</div>
+            Day 5 - "joy" vinyasa, Yoga with Adriene
+          </div>
+          <div class="Week__Day --feb" data-desc="02-21">
+            <div class="Week__DayNum">21</div>
+            Day 6 - In-person vinyasa group class at baby cobra
+          </div>
+          <div class="Week__Day --feb" data-desc="02-22">
+            <div class="Week__DayNum">22</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-16">
+            This was a great return to a bit of light flow yoga, my hips are
+            quite tight. I felt more awake and alert after a 20 min session.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-17">
+            Also a good way to start my day, but i found it a bit too meditative
+            for my taste. I wanted to move more!
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-18">
+            This one was HARD. I liked it, it woke up up. In fact, i woke up on
+            my own around 630am today, dunno why.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-19">
+            My mood way low, I did this practice late in the day just to knock
+            it out. I barely remember it.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-20">
+            Meduim difficulty. I find my shoulders are the muscle group that
+            fatigues the soonest. That surprised me. I did this one in the late
+            afternoon before lifting, which was a wonderful warmup.
+          </div>
+          <div class="Week__DayDesc --jan" data-desc="02-21">
+            This was _hard_. It was also really rewarding. In true nyc fashion
+            though, no one was very talkative. It'd be more fun with a friend.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 9: ranked competitive overwatch-->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">COMP. OVERWATCH</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              Some themes demand a lot of time, some are new and hard things.
+              This week is neither. I just feel like playing video games. But
+              I'll still try a new thing inside that familiar context -
+              competitive ranked Overwatch.
+            </div>
+            <div>Gaming</div>
+            <div>Rating 8/10</div>
+          </div>
+
+          <div class="Week__Day --feb" data-desc="02-23">
+            <div class="Week__DayNum">23</div>
+            Warming up
+          </div>
+          <div class="Week__Day --feb" data-desc="02-24">
+            <div class="Week__DayNum">24</div>
+            Getting tilted
+          </div>
+          <div class="Week__Day --feb" data-desc="02-25">
+            <div class="Week__DayNum">25</div>
+            Turning off chat
+          </div>
+          <div class="Week__Day --feb" data-desc="02-26">
+            <div class="Week__DayNum">26</div>
+            Getting into the zone
+          </div>
+          <div class="Week__Day --feb" data-desc="02-27">
+            <div class="Week__DayNum">27</div>
+            Climbing
+          </div>
+          <div class="Week__Day --feb" data-desc="02-28">
+            <div class="Week__DayNum">28</div>
+            Branching out to other roles
+          </div>
+          <div class="Week__Day --mar" data-desc="03-01">
+            <div class="Week__DayNum">1</div>
+            Reflecting
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-23">
+            I've been a casual on-again-off-again overwatch player since launch
+            but I've always been a quickplay guy, never comp. I want to try the
+            "real" game, so this week I'm playing some competitive ranked
+            overwatch every day. I'm a zenyatta main, which is nice because he
+            never gets banned and rarely contested.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-24">
+            My first competitive games were a mixed bag. Other players can be
+            *very* toxic when your team is doing poorly. It threw me off, I only
+            logged 3 games today.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-25">
+            Turning off all comms felt weird, I like the social aspect of
+            gaming. But I have to admit it's improved the experience and helped
+            me play better. I'm doing more winning than losing.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-26">
+            I feel comforable at this point, but I really only get into the zone
+            on zen. I know his kit well. When I'm forced to swap for whatever
+            reason my focus suffers. Thankfully basically no one wants to play
+            zen, so I get him all to myself.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-27">
+            I've been climbing all week. After being place in mid-gold I'm now
+            high plat. That's still in the middle of the bell curve, but it's on
+            the right side now instead of the left. I'm quite proud of myself
+            tbh.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="02-28">
+            I'm plat 2 on support now, and dipped my toes into damage a little.
+            I'm less confident on dps, and i dont have a "main." It shows! I did
+            much worse.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-01">
+            I have a lifelong aversion to "doing the hard thing," lest I be
+            revealed as not actually good. This was a healthy thing to try. I
+            don't know if I'm "good" at overwatch in an objective sense but I'm
+            better than I expected to be. I should carry this lesson into my
+            career and social life.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 10: houseplants-->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">HOUSEPLANTS</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              This week I took care of some long-overdue houseplant upkeep. I
+              said goodbye to a few long-dead plants, repotted my overgrown
+              succulents, and bought a new Orchid for my bedroom window. A
+              low-effort theme, but I'm happy to have done it.
+            </div>
+            <div>Housekeeping/Decorating/Gardening</div>
+            <div>Rating 6/10</div>
+          </div>
+
+          <div class="Week__Day --mar" data-desc="03-02">
+            <div class="Week__DayNum">02</div>
+          </div>
+          <div class="Week__Day --mar" data-desc="03-03">
+            <div class="Week__DayNum">03</div>
+          </div>
+          <div class="Week__Day --mar" data-desc="03-04">
+            <div class="Week__DayNum">04</div>
+            Orchid
+          </div>
+          <div class="Week__Day --mar" data-desc="03-05">
+            <div class="Week__DayNum">05</div>
+          </div>
+          <div class="Week__Day --mar" data-desc="03-06">
+            <div class="Week__DayNum">06</div>
+            Fancy Plants Store
+          </div>
+          <div class="Week__Day --mar" data-desc="03-07">
+            <div class="Week__DayNum">07</div>
+            Repotting
+          </div>
+          <div class="Week__Day --mar" data-desc="03-08">
+            <div class="Week__DayNum">08</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-04">
+            I bought a white orchid. I haven't been able to own one for a
+            decade, I had a cat. Orchids are toxic to cats. I don't have a cat
+            anymore so it seemed like the time. It lives on my bedroom
+            windowsill, getting the morning sun. I hope it thrives there.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-06">
+            I went to the fancy expensive bushwick plant store and bought some
+            potting soil. The very cool 20-somethings working there complimented
+            my jacket. I felt very cool too. That's not really a plants thing
+            but It happened becuse of the plants. So maybe that's a plants
+            thing.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-06">
+            I (finaly) repotted my succulents. My long neglected cactus which
+            had too little soil. My overgrown aloe which had to be split into 4
+            different pots. I said goodbye to a prayer plant that's been in poor
+            health for a year, and to another small long-dead succulent. Plants
+            from a former life.
+          </div>
+        </div>
+      </div>
+
+      <!-- week 10: website-->
+      <div class="Week">
+        <div class="Week__Days">
+          <div class="Week__Day --theme">Website</div>
+          <div class="Week__ThemeMeta">
+            <div>
+              I knew from week 1 that I wanted to make a webpage for this
+              project, once I had a couple month's completed.
+            </div>
+            <div>Coding/Design</div>
+            <div>Rating 7/10</div>
+          </div>
+
+          <div class="Week__Day --mar" data-desc="03-09">
+            <div class="Week__DayNum">09</div>
+          </div>
+          <div class="Week__Day --mar" data-desc="03-10">
+            <div class="Week__DayNum">10</div>
+          </div>
+          <div class="Week__Day --mar" data-desc="03-11">
+            <div class="Week__DayNum">11</div>
+            Getting Started
+          </div>
+          <div class="Week__Day --mar" data-desc="03-12">
+            <div class="Week__DayNum">12</div>
+            Data Entry
+          </div>
+          <div class="Week__Day --mar" data-desc="03-13">
+            <div class="Week__DayNum">13</div>
+            Deployment
+          </div>
+          <div class="Week__Day --mar" data-desc="03-14">
+            <div class="Week__DayNum">14</div>
+            Sharing
+          </div>
+          <div class="Week__Day --mar" data-desc="03-15">
+            <div class="Week__DayNum">15</div>
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-11">
+            I decided on the basic design. You see it here. I wanted something
+            bold, high contrast, visually loud, and a little bit abrasive. I'm
+            not interested in user-friendliness, but i do want this to be
+            legible.
+          </div>
+
+          <div class="Week__DayDesc --jan" data-desc="03-12">
+            Now that most of the design decisions are made and the markup is in
+            a good place, I've transferred my notes to this format. It's a large
+            project, I've written more than I realized.
+          </div>
+
+          <div class="Week__DayDesc --mar" data-desc="03-13">
+            <div class="Week__DayNum">13</div>
+            It's hosted on github pages now.
+          </div>
+
+          <div class="Week__DayDesc --mar" data-desc="03-14">
+            <div class="Week__DayNum">13</div>
+            I showed this to some friends and family. I realize that what I've
+            made is sort of a public diary. Strange!
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer"></footer>
+    <!-- <audio id="audio1" src="assets/wood_knocks1.wav"></audio>
+    <audio id="audio2" src="assets/wood_knocks2.wav"></audio>
+    <audio id="audio3" src="assets/wood_knocks2.wav"></audio> -->
+  </body>
+
+  <script>
+    // this works but i dont like the samples, theyre too organic/woody sounding
+    // maybe a beep/chirp/metallic sound with
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //   const audio1 = document.getElementById("audio1");
+    //   const audio2 = document.getElementById("audio2");
+    //   const audio3 = document.getElementById("audio3");
+    //   const sounds = [audio1, audio2, audio3];
+
+    //   function playRandomSound() {
+    //     const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+    //     if (randomSound) {
+    //       randomSound.play();
+    //     }
+    //   }
+
+    //   document.querySelectorAll(".Week__Day").forEach(function (day) {
+    //     day.addEventListener("mouseenter", function () {
+    //       playRandomSound();
+    //     });
+
+    //     day.addEventListener("mouseleave", function () {
+    //       playRandomSound();
+    //     });
+    //   });
+    // });
+
+    document.querySelectorAll(".Week__Day[data-desc]").forEach((day) => {
+      const desc = document.querySelector(
+        `.Week__DayDesc[data-desc="${day.dataset.desc}"]`,
+      );
+      if (!desc) return;
+      day.addEventListener("mouseenter", () => desc.classList.add("--show"));
+      day.addEventListener("mouseleave", () => desc.classList.remove("--show"));
+    });
+  </script>
+</html>
