@@ -1,0 +1,287 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --black: #000;
+  --faded-black: #333;
+  --white: #fff;
+  --pink: #ff206e;
+  --turquoise: #41ead4;
+  --yellow: #fbff12;
+  --orange: #ff7f11;
+  --lime: #baff00;
+  --cyan: #00fff7;
+  --purple: #a259ff;
+  --red: #ff1744;
+  --blue: #2979ff;
+  --green: #00e676;
+  --magenta: #ff2eec;
+  --gold: #ffd600;
+  --teal: #1de9b6;
+
+  --white-90: rgba(255, 255, 255, 0.9);
+
+  --black-85: rgba(0, 0, 0, 0.85);
+  --faded-black-85: rgba(51, 51, 51, 0.85);
+  --white-85: rgba(255, 255, 255, 0.85);
+  --pink-85: rgba(255, 32, 110, 0.85);
+  --turquoise-85: rgba(65, 234, 212, 0.85);
+  --yellow-85: rgba(251, 255, 18, 0.85);
+  --orange-85: rgba(255, 127, 17, 0.85);
+  --lime-85: rgba(186, 255, 0, 0.85);
+  --cyan-85: rgba(0, 255, 247, 0.85);
+  --purple-85: rgba(162, 89, 255, 0.85);
+  --red-85: rgba(255, 23, 68, 0.85);
+  --blue-85: rgba(41, 121, 255, 0.85);
+  --green-85: rgba(0, 230, 118, 0.85);
+  --magenta-85: rgba(255, 46, 236, 0.85);
+  --gold-85: rgba(255, 214, 0, 0.85);
+  --teal-85: rgba(29, 233, 182, 0.85);
+}
+
+::selection {
+  color: var(--cyan);
+  background-color: var(--orange);
+}
+
+body {
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 20px;
+}
+
+.Calendar {
+  width: 100%;
+  min-width: 1800px;
+  border-bottom: 1px solid var(--black);
+}
+
+.Calendar__Header {
+  display: grid;
+  grid-template-columns: 80px repeat(7, minmax(0, 1fr));
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 9;
+}
+
+.Calendar__HeaderItem {
+  flex: 1;
+  font-weight: bold;
+  background: var(--black);
+  color: var(--white);
+  border: 3px solid var(--white);
+  border-right: 0;
+  padding: 5px;
+}
+
+.Week {
+  position: relative;
+}
+
+.Week.--orange .Week__Day {
+  background-color: var(--orange);
+}
+
+.Week.--pink .Week__Day {
+  background-color: var(--pink);
+}
+.Week.--turquoise .Week__Day {
+  background-color: var(--turquoise);
+}
+.Week.--yellow .Week__Day {
+  background-color: var(--yellow);
+  color: var(--black);
+}
+.Week.--lime .Week__Day {
+  background-color: var(--lime);
+  color: var(--black);
+}
+.Week.--cyan .Week__Day {
+  background-color: var(--cyan);
+}
+.Week.--purple .Week__Day {
+  background-color: var(--purple);
+}
+.Week.--red .Week__Day {
+  background-color: var(--red);
+}
+.Week.--blue .Week__Day {
+  background-color: var(--blue);
+}
+.Week.--green .Week__Day {
+  background-color: var(--green);
+}
+.Week.--magenta .Week__Day {
+  background-color: var(--magenta);
+}
+.Week.--gold .Week__Day {
+  background-color: var(--gold);
+}
+.Week.--teal .Week__Day {
+  background-color: var(--teal);
+}
+.Week.--black .Week__Day {
+  background-color: var(--black);
+}
+.Week.--white .Week__Day {
+  background-color: var(--white);
+  color: var(--black);
+}
+.Week.--faded-black .Week__Day {
+  background-color: var(--faded-black);
+}
+
+.Week__Meta {
+  /* position: absolute; */
+  /* top: 0; */
+  /* left: 0; */
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  z-index: 2;
+  font-size: 60px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.5);
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.Week__Days {
+  display: grid;
+  grid-template-columns: 80px repeat(7, minmax(0, 1fr));
+}
+
+.Week__Day {
+  text-transform: uppercase;
+  border: 3px solid var(--black);
+  border-bottom: 0 none;
+  aspect-ratio: 1 / 1;
+  background-color: var(--faded-black);
+  color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 10px;
+}
+
+.Week__Day:not(:last-child) {
+  border-right: 0 none;
+}
+
+.Week__Day:hover {
+}
+
+.Week__Day.--disable {
+  background-color: #f77f1333 !important;
+  pointer-events: none;
+}
+
+.Week__Day.--jan {
+  background-color: var(--faded-black);
+  color: var(--white);
+}
+
+.Week__Day.--feb {
+  background-color: var(--purple);
+  color: var(--white);
+}
+
+.Week__Day.--mar {
+  background-color: var(--blue);
+  color: var(--white);
+}
+
+.Week__Day:not(.--theme):hover .Week__DayNum {
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.Week__Day.--theme {
+  border-right: 3px solid var(--black);
+  writing-mode: sideways-lr;
+  aspect-ratio: unset;
+  position: initial;
+}
+
+.Week__ThemeMeta {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(100% - 80px);
+  height: 100%;
+  padding: 10px;
+  background: var(--white-90);
+  z-index: 3;
+  writing-mode: initial;
+  display: none;
+}
+
+.Week__Day.--theme:hover {
+  background: black;
+  color: white;
+}
+.Week__Day.--theme:hover + .Week__ThemeMeta {
+  display: block;
+  color: black;
+}
+
+.Week__DayDesc {
+  position: absolute;
+  line-height: 1.5;
+  top: 0px;
+  right: 0px;
+  z-index: 3;
+  width: calc(100% - 80px);
+  height: calc(100% - 0px);
+  background: var(--teal-85);
+  color: var(--white);
+  padding: 10px;
+  opacity: 0;
+  pointer-events: none;
+  font-weight: normal;
+  border: 3px solid var(--black);
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  text-shadow:
+    1px 1px 0px var(--teal),
+    -1px -1px 0px var(--teal),
+    -1px 1px 0px var(--teal),
+    1px -1px 0px var(--teal);
+}
+
+.Week__DayDesc.--show {
+  opacity: 1;
+}
+
+.Week__DayNum {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  font-size: 12px;
+  font-weight: bold;
+  border-left: 3px solid var(--black);
+  border-bottom: 3px solid var(--black);
+}
+
+.Footer p {
+  margin: 1em 0;
+}
