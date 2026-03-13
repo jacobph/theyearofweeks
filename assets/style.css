@@ -58,7 +58,7 @@ body {
 .Calendar {
   width: 100%;
   min-width: 1800px;
-  border-bottom: 1px solid var(--black);
+  border-bottom: 3px solid var(--black);
 }
 
 .Calendar__Header {
@@ -179,7 +179,8 @@ body {
   border-right: 0 none;
 }
 
-.Week__Day:hover {
+.Week__Day:not(.--theme):hover {
+  filter: invert(1);
 }
 
 .Week__Day.--disable {
@@ -208,17 +209,18 @@ body {
 }
 
 .Week__Day.--theme {
-  border-right: 3px solid var(--black);
   writing-mode: sideways-lr;
   aspect-ratio: unset;
   position: initial;
 }
 
-.Week__ThemeMeta {
+.Week__ThemeDesc {
   position: absolute;
   top: 0;
   right: 0;
   width: calc(100% - 80px);
+  border: 3px solid var(--black);
+  border-bottom: 0 none;
   height: 100%;
   padding: 10px;
   background: var(--white-90);
@@ -230,8 +232,10 @@ body {
 .Week__Day.--theme:hover {
   background: black;
   color: white;
+  border: 3px solid var(--black);
+  border-bottom: 0 none;
 }
-.Week__Day.--theme:hover + .Week__ThemeMeta {
+.Week__Day.--theme:hover + .Week__ThemeDesc {
   display: block;
   color: black;
 }
@@ -244,22 +248,22 @@ body {
   z-index: 3;
   width: calc(100% - 80px);
   height: calc(100% - 0px);
-  background: var(--teal-85);
+  background: var(--blue-85);
   color: var(--white);
   padding: 10px;
   opacity: 0;
   pointer-events: none;
   font-weight: normal;
   border: 3px solid var(--black);
-
+  border-bottom: 0 none;
   display: flex;
   align-items: flex-end;
   justify-content: flex-start;
   text-shadow:
-    1px 1px 0px var(--teal),
-    -1px -1px 0px var(--teal),
-    -1px 1px 0px var(--teal),
-    1px -1px 0px var(--teal);
+    1px 1px 0px var(--blue),
+    -1px -1px 0px var(--blue),
+    -1px 1px 0px var(--blue),
+    1px -1px 0px var(--blue);
 }
 
 .Week__DayDesc.--show {
