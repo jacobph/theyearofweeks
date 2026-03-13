@@ -55,6 +55,14 @@ body {
   font-size: 20px;
 }
 
+header,
+footer {
+  padding: 20px 30px;
+}
+
+mark {
+  background: var(--teal);
+}
 .Calendar {
   width: 100%;
   min-width: 1800px;
@@ -264,6 +272,151 @@ body {
     -1px -1px 0px var(--blue),
     -1px 1px 0px var(--blue),
     1px -1px 0px var(--blue);
+}
+
+.Week.--orange .Week__DayDesc {
+  background: var(--orange-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--orange),
+    -1px -1px 0px var(--orange),
+    -1px 1px 0px var(--orange),
+    1px -1px 0px var(--orange);
+}
+.Week.--pink .Week__DayDesc {
+  background: var(--pink-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--pink),
+    -1px -1px 0px var(--pink),
+    -1px 1px 0px var(--pink),
+    1px -1px 0px var(--pink);
+}
+.Week.--turquoise .Week__DayDesc {
+  background: var(--turquoise-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--turquoise),
+    -1px -1px 0px var(--turquoise),
+    -1px 1px 0px var(--turquoise),
+    1px -1px 0px var(--turquoise);
+}
+.Week.--yellow .Week__DayDesc {
+  background: var(--yellow-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--yellow),
+    -1px -1px 0px var(--yellow),
+    -1px 1px 0px var(--yellow),
+    1px -1px 0px var(--yellow);
+}
+.Week.--lime .Week__DayDesc {
+  background: var(--lime-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--lime),
+    -1px -1px 0px var(--lime),
+    -1px 1px 0px var(--lime),
+    1px -1px 0px var(--lime);
+}
+.Week.--cyan .Week__DayDesc {
+  background: var(--cyan-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--cyan),
+    -1px -1px 0px var(--cyan),
+    -1px 1px 0px var(--cyan),
+    1px -1px 0px var(--cyan);
+}
+.Week.--purple .Week__DayDesc {
+  background: var(--purple-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--purple),
+    -1px -1px 0px var(--purple),
+    -1px 1px 0px var(--purple),
+    1px -1px 0px var(--purple);
+}
+.Week.--red .Week__DayDesc {
+  background: var(--red-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--red),
+    -1px -1px 0px var(--red),
+    -1px 1px 0px var(--red),
+    1px -1px 0px var(--red);
+}
+.Week.--blue .Week__DayDesc {
+  background: var(--blue-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--blue),
+    -1px -1px 0px var(--blue),
+    -1px 1px 0px var(--blue),
+    1px -1px 0px var(--blue);
+}
+.Week.--green .Week__DayDesc {
+  background: var(--green-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--green),
+    -1px -1px 0px var(--green),
+    -1px 1px 0px var(--green),
+    1px -1px 0px var(--green);
+}
+.Week.--magenta .Week__DayDesc {
+  background: var(--magenta-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--magenta),
+    -1px -1px 0px var(--magenta),
+    -1px 1px 0px var(--magenta),
+    1px -1px 0px var(--magenta);
+}
+.Week.--gold .Week__DayDesc {
+  background: var(--gold-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--gold),
+    -1px -1px 0px var(--gold),
+    -1px 1px 0px var(--gold),
+    1px -1px 0px var(--gold);
+}
+.Week.--teal .Week__DayDesc {
+  background: var(--teal-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--teal),
+    -1px -1px 0px var(--teal),
+    -1px 1px 0px var(--teal),
+    1px -1px 0px var(--teal);
+}
+.Week.--black .Week__DayDesc {
+  background: var(--black-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--black),
+    -1px -1px 0px var(--black),
+    -1px 1px 0px var(--black),
+    1px -1px 0px var(--black);
+}
+.Week.--white .Week__DayDesc {
+  background: var(--white-85);
+  color: var(--black);
+  text-shadow:
+    1px 1px 0px var(--white),
+    -1px -1px 0px var(--white),
+    -1px 1px 0px var(--white),
+    1px -1px 0px var(--white);
+}
+.Week.--faded-black .Week__DayDesc {
+  background: var(--faded-black-85);
+  color: var(--white);
+  text-shadow:
+    1px 1px 0px var(--faded-black),
+    -1px -1px 0px var(--faded-black),
+    -1px 1px 0px var(--faded-black),
+    1px -1px 0px var(--faded-black);
 }
 
 .Week__DayDesc.--show {
