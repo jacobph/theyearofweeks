@@ -92,6 +92,17 @@ mark {
   position: relative;
 }
 
+.Week__Count {
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  writing-mode: lr;
+  font-size: 13px;
+  text-align: center;
+  width: 80px;
+  z-index: 999;
+}
+
 .Week.--orange .Week__Day {
   background-color: var(--orange);
 }
@@ -261,7 +272,7 @@ mark {
   padding: 10px;
   opacity: 0;
   pointer-events: none;
-  font-weight: normal;
+  font-weight: bold;
   border: 3px solid var(--black);
   border-bottom: 0 none;
   display: flex;
